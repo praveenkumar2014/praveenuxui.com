@@ -322,24 +322,12 @@ const jsCopy = [
 
 const BRAND_CSS = `
 <style id="praveenuxui-brand">
-:root{--px-sun-1:#ff9d09;--px-sun-2:#f34d11;--px-sun-3:#8d0c39;--px-night-1:#250a4a;--px-night-2:#02093a}
-/* Theme-only overrides so the original layout stays exactly as-is. */
-:root{--color-midnight-blue:#ffe9d0;--color-downy:#ffb347;--color-biscay:#0a0630}
-#__nuxt section{color:#ffe9d0!important}
-#__nuxt section.aleph{background:rgba(2,9,58,.88)!important;color:#ffe9d0!important}
-#__nuxt .intro,#__nuxt .column,#__nuxt .technologies{color:#ffe9d0!important}
-#__nuxt .divider-svg path{color:rgba(255,233,208,.28)!important}
-html,body{background:#02093a!important}
-#px-gradient{position:fixed!important;inset:0!important;z-index:0!important;pointer-events:none!important;display:block}
-#__nuxt{position:relative;z-index:1!important}
-.webgl{opacity:0!important}
-@keyframes pxLogoFill{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+/* Preserve the original layout and theme. Only the brand mark is replaced. */
 .logo[data-v-9229b6a8]{display:flex!important;align-items:center;justify-content:center;letter-spacing:0!important;text-indent:0!important;width:auto!important;position:relative!important}
-.logo .brand-logo{height:100%!important;width:auto!important;max-width:34vw!important;object-fit:contain!important;opacity:0!important;filter:none!important}
-.logo::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,#ffcf4d 0%,#ff9d09 18%,#f34d11 38%,#8d0c39 62%,#250a4a 80%,#02093a 100%);background-size:300% 300%;animation:pxLogoFill 7s ease-in-out infinite;-webkit-mask:url("/img/praveenlogo.png") center/contain no-repeat;mask:url("/img/praveenlogo.png") center/contain no-repeat;pointer-events:none}
+.logo .brand-logo{height:100%!important;width:auto!important;max-width:34vw!important;object-fit:contain!important;filter:none!important}
 .header.is-light .logo .brand-logo{filter:none}
 .footer-logo[data-v-e5946b68]{height:2.8vw;width:auto;max-height:44px;object-fit:contain;margin-bottom:2.2vw;filter:brightness(0) invert(1)}
-.splash[data-v-feeb5cb6] .enter[data-v-feeb5cb6]::before{content:"";position:absolute;top:12%;left:50%;transform:translateX(-50%);width:56%;height:56%;background:linear-gradient(115deg,#ffcf4d 0%,#ff9d09 18%,#f34d11 38%,#8d0c39 62%,#250a4a 80%,#02093a 100%);background-size:300% 300%;animation:pxLogoFill 7s ease-in-out infinite;-webkit-mask:url("/img/praveenlogo.png") center/contain no-repeat;mask:url("/img/praveenlogo.png") center/contain no-repeat;filter:none;opacity:.95;pointer-events:none}
+.splash[data-v-feeb5cb6] .enter[data-v-feeb5cb6]::before{content:"";position:absolute;top:12%;left:50%;transform:translateX(-50%);width:56%;height:56%;background:url("/img/praveenlogo.png") center/contain no-repeat;pointer-events:none}
 .splash[data-v-feeb5cb6] .enter[data-v-feeb5cb6] .label[data-v-feeb5cb6]{display:none!important}
 .logo[data-v-d2ba1143]{background:none!important;-webkit-mask-image:none!important;mask-image:none!important;background-image:url("/img/praveenlogo.png")!important;background-position:center!important;background-repeat:no-repeat!important;background-size:contain!important;filter:none!important}
 @media (max-width:600px){.logo .brand-logo{max-width:44vw!important}.footer-logo[data-v-e5946b68]{height:9vw;margin-bottom:7vw}}
@@ -387,7 +375,8 @@ async function main() {
       text = apply(text, htmlOnly);
       if (text.includes('id="praveenuxui-brand"')) text = text.replace(/<style id="praveenuxui-brand">[\s\S]*?<\/style>/, BRAND_CSS);
       else text = text.replace('</head>', BRAND_CSS + '</head>');
-      if (!text.includes('px-gradient.js')) text = text.replace('</head>', '<script src="/px-gradient.js" defer></script></head>');
+      // Ensure the old full-page gradient script is never injected; the gradient now lives only inside the sidebar workspace.
+      text = text.replace(/<script src="\/px-gradient\.js" defer><\/script>/g, '');
       if (!text.includes('px-enhance.js')) text = text.replace('</body>', '<script src="/px-enhance.js" defer></script></body>');
     } else {
       text = apply(text, payloadOnly);
