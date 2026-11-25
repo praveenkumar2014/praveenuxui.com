@@ -38,7 +38,7 @@ docker build -t praveenuxui-profile .
 docker run --rm -p 3000:3000 praveenuxui-profile
 ```
 
-For Coolify: create a **Public Repository** app from `praveenkumar2014/praveenuxui.com`, use the **Dockerfile** build pack, set the port to `3000`, add domains `praveenuxui.com` and `www.praveenuxui.com`, then enable SSL/Let's Encrypt.
+For Coolify, the existing `praveenuxui.com` application uses this repo's `docker-compose.yaml`. The container listens only on the internal proxy port `80`; no host port is published, so it does not conflict with Dokploy's host port `3000`. Domains are already configured as `praveenuxui.com` and `www.praveenuxui.com` with SSL/Let's Encrypt.
 
 ## Notes
 
