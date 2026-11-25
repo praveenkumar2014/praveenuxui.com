@@ -1,0 +1,7 @@
+.git
+.gitignore
+.playwright-mcp
+net-home.txt
+net-aleph.txt
+*.log
+.DS_Store
