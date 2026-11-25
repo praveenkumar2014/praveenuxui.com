@@ -2,7 +2,7 @@
 // Copy is original writing inspired by Don Norman's design principles and the
 // seven stages of action; the original layout, frames and visual theme stay intact.
 // Idempotent: safe to run again after `node mirror.mjs` or after a previous run.
-import { promises as fs } from 'node:fs';
+import { promises as fs, existsSync } from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 
@@ -246,6 +246,8 @@ const htmlOnly = [
   ['<div class="label" data-v-654b17dd>Vision</div>', '<div class="label" data-v-654b17dd>Profile</div>'],
   ['> Vision </a>', '> Profile </a>'],
   ['> Aleph </a>', '> Work </a>'],
+  ['<div class="label" data-v-feeb5cb6>Welcome</div>', ''],
+  ['>Welcome</div>', ''],
 
   // work page headings/copy (SSR splits text across tags and uses &#39;)
   ['We are designing Aleph to surpass classical diagnostic methods in orders of magnitude, in both accuracy and speed. We believe in a future where truth, insight, and wisdom becomes democratized at a moment&#39;s notice, when you need it most. ', 'Every interaction follows a quiet loop: a goal forms, an intention takes shape, a move is planned and made, the interface answers, we read that answer, and we decide what comes next. I design for all of it.'],
@@ -281,6 +283,8 @@ const payloadOnly = [
 // All visible strings that live inside the JS bundles.
 const jsCopy = [
   // specific URLs/labels first, then the generic brand swap
+  ['x=k("Welcome")', 'x=k("")'],
+  ['x.value="Welcome"', 'x.value=""'],
   ['https://x.com/Amaterasu_mind', 'https://twitter.com/praveenuxui/'],
   ['https://x.com/PRAVEENUXUI_mind', 'https://twitter.com/praveenuxui/'],
   ['https://x.com/', 'https://twitter.com/praveenuxui/'],
@@ -318,14 +322,21 @@ const jsCopy = [
 
 const BRAND_CSS = `
 <style id="praveenuxui-brand">
-.logo[data-v-9229b6a8]{display:flex!important;align-items:center;justify-content:center;letter-spacing:0!important;text-indent:0!important;width:auto!important}
-.logo .brand-logo{height:100%;width:auto;max-width:34vw;object-fit:contain;filter:brightness(0) invert(1);transition:filter .25s var(--ease-none)}
+:root{--px-sun-1:#ff9d09;--px-sun-2:#f34d11;--px-sun-3:#8d0c39;--px-night-1:#250a4a;--px-night-2:#02093a}
+html,body{background:#02093a!important}
+#px-gradient{position:fixed!important;inset:0!important;z-index:0!important;pointer-events:none!important;display:block}
+#__nuxt{position:relative;z-index:1!important}
+.webgl{opacity:0!important}
+@keyframes pxLogoFill{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.logo[data-v-9229b6a8]{display:flex!important;align-items:center;justify-content:center;letter-spacing:0!important;text-indent:0!important;width:auto!important;position:relative!important}
+.logo .brand-logo{height:100%!important;width:auto!important;max-width:34vw!important;object-fit:contain!important;opacity:0!important;filter:none!important}
+.logo::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,#ffcf4d 0%,#ff9d09 18%,#f34d11 38%,#8d0c39 62%,#250a4a 80%,#02093a 100%);background-size:300% 300%;animation:pxLogoFill 7s ease-in-out infinite;-webkit-mask:url("/img/praveenlogo.png") center/contain no-repeat;mask:url("/img/praveenlogo.png") center/contain no-repeat;pointer-events:none}
 .header.is-light .logo .brand-logo{filter:none}
 .footer-logo[data-v-e5946b68]{height:2.8vw;width:auto;max-height:44px;object-fit:contain;margin-bottom:2.2vw;filter:brightness(0) invert(1)}
-.splash[data-v-feeb5cb6] .enter[data-v-feeb5cb6]::before{content:"";position:absolute;top:12%;left:50%;transform:translateX(-50%);width:56%;height:56%;background:url("/praveenlogo.png") center/contain no-repeat;filter:brightness(0) invert(1);opacity:.95;pointer-events:none}
-.splash[data-v-feeb5cb6] .enter[data-v-feeb5cb6] .label[data-v-feeb5cb6]{position:absolute;bottom:14%;left:0;right:0;text-align:center}
-.logo[data-v-d2ba1143]{background:none!important;-webkit-mask-image:none!important;mask-image:none!important;background-image:url("/praveenlogo.png")!important;background-position:center!important;background-repeat:no-repeat!important;background-size:contain!important;filter:none!important}
-@media (max-width:600px){.logo .brand-logo{max-width:44vw}.footer-logo[data-v-e5946b68]{height:9vw;margin-bottom:7vw}}
+.splash[data-v-feeb5cb6] .enter[data-v-feeb5cb6]::before{content:"";position:absolute;top:12%;left:50%;transform:translateX(-50%);width:56%;height:56%;background:linear-gradient(115deg,#ffcf4d 0%,#ff9d09 18%,#f34d11 38%,#8d0c39 62%,#250a4a 80%,#02093a 100%);background-size:300% 300%;animation:pxLogoFill 7s ease-in-out infinite;-webkit-mask:url("/img/praveenlogo.png") center/contain no-repeat;mask:url("/img/praveenlogo.png") center/contain no-repeat;filter:none;opacity:.95;pointer-events:none}
+.splash[data-v-feeb5cb6] .enter[data-v-feeb5cb6] .label[data-v-feeb5cb6]{display:none!important}
+.logo[data-v-d2ba1143]{background:none!important;-webkit-mask-image:none!important;mask-image:none!important;background-image:url("/img/praveenlogo.png")!important;background-position:center!important;background-repeat:no-repeat!important;background-size:contain!important;filter:none!important}
+@media (max-width:600px){.logo .brand-logo{max-width:44vw!important}.footer-logo[data-v-e5946b68]{height:9vw;margin-bottom:7vw}}
 </style>`;
 
 function apply(text, pairs) {
@@ -352,6 +363,14 @@ async function main() {
   } catch (e) {
     console.warn('asset generation skipped:', e.message);
   }
+  // Ambient music loop (skip regeneration if it already exists to keep builds fast).
+  if (!existsSync(path.join(SITE, 'audio/ambient.mp3'))) {
+    try {
+      execFileSync('python3', ['music.py'], { stdio: 'inherit' });
+    } catch (e) {
+      console.warn('music generation skipped:', e.message);
+    }
+  }
 
   for (const rel of files) {
     const file = path.join(SITE, rel);
@@ -362,6 +381,8 @@ async function main() {
       text = apply(text, htmlOnly);
       if (text.includes('id="praveenuxui-brand"')) text = text.replace(/<style id="praveenuxui-brand">[\s\S]*?<\/style>/, BRAND_CSS);
       else text = text.replace('</head>', BRAND_CSS + '</head>');
+      if (!text.includes('px-gradient.js')) text = text.replace('</head>', '<script src="/px-gradient.js" defer></script></head>');
+      if (!text.includes('px-enhance.js')) text = text.replace('</body>', '<script src="/px-enhance.js" defer></script></body>');
     } else {
       text = apply(text, payloadOnly);
     }
