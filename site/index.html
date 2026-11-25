@@ -80,8 +80,15 @@
 
 
 
+
 <style id="praveenuxui-brand">
 :root{--px-sun-1:#ff9d09;--px-sun-2:#f34d11;--px-sun-3:#8d0c39;--px-night-1:#250a4a;--px-night-2:#02093a}
+/* Theme-only overrides so the original layout stays exactly as-is. */
+:root{--color-midnight-blue:#ffe9d0;--color-downy:#ffb347;--color-biscay:#0a0630}
+#__nuxt section{color:#ffe9d0!important}
+#__nuxt section.aleph{background:rgba(2,9,58,.88)!important;color:#ffe9d0!important}
+#__nuxt .intro,#__nuxt .column,#__nuxt .technologies{color:#ffe9d0!important}
+#__nuxt .divider-svg path{color:rgba(255,233,208,.28)!important}
 html,body{background:#02093a!important}
 #px-gradient{position:fixed!important;inset:0!important;z-index:0!important;pointer-events:none!important;display:block}
 #__nuxt{position:relative;z-index:1!important}
