@@ -38,7 +38,7 @@ docker build -t praveenuxui-profile .
 docker run --rm -p 3000:3000 praveenuxui-profile
 ```
 
-For Coolify, the existing `praveenuxui.com` application uses this repo's `docker-compose.yaml`. The container listens only on the internal proxy port `80`; no host port is published, so it does not conflict with Dokploy's host port `3000`. Domains are already configured as `praveenuxui.com` and `www.praveenuxui.com` with SSL/Let's Encrypt.
+For Coolify, the existing `praveenuxui.com` application uses this repo's `docker-compose.yml`. The container listens only on the internal proxy port `80`; no host port is published, so it does not conflict with Dokploy's host port `3000`. Domains are already configured as `praveenuxui.com` and `www.praveenuxui.com` with SSL/Let's Encrypt.
 
 ## Notes
 
